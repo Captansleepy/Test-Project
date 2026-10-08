@@ -59,7 +59,15 @@ try {
   );
   console.log("Read-only check: no data changed.");
 } catch (error) {
-  console.error("User check failed:", error.name);
+  const message = String(error.message || "")
+    .replace(/mongodb(?:\+srv)?:\/\/[^\s"'<>]+/gi, "[REDACTED URI]");
+
+  console.error("User check failed:", {
+    name: error.name,
+    code: error.code,
+    message,
+  });
+
   process.exitCode = 1;
 } finally {
   await mongoose.disconnect();
